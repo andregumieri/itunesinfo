@@ -3,21 +3,20 @@
 	namespace CFPropertyList;
 
 	if(!require 'config.php') die("Arquivo config.php não foi encontrado\n");
+	
 	require __DIR__.'/lib/CFPropertyList/classes/CFPropertyList/CFPropertyList.php';
 	$plist = new CFPropertyList( XML_PATH, CFPropertyList::FORMAT_XML );
 	$plist = $plist->toArray();
 
 	foreach($plist['Tracks'] as $id=>$info) {
-		// TV SHOW
-		/*
-		if(!isset($info['TV Show']) || intval($info['TV Show']<1)) continue;
-		echo $info['Series'] . " S" . $info['Season'] . "E" . $info['Episode Order'] . "\n";
-		*/
+		$type=null;
+		if(isset($info['Movie']) && (bool)$info['Movie'] && !(bool)$info['iTunesU'] && !(bool)$info['Podcast']) $type="movie";
+		elseif(isset($info['TV Show']) && (bool)$info['TV Show']) $type="tvshow";
 
-		// MOVIE
-		/*
-		if(!isset($info['Movie']) || intval($info['Movie']<1) || $info['Genre']=='iTunes U' || $info['Genre']=='Podcast' || isset($info['iTunesU'])) continue;
-		echo $info['Name']. "\n";
-		*/
+		if($type=="tvshow") {
+			echo "TV Show: " . $info['Series'] . " S" . $info['Season'] . "E" . $info['Episode Order'] . "\n";
+		} else if($type=="movie") {
+			echo "Movie: " . $info['Name']. "\n";
+		}
 	}
 ?>
